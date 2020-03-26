@@ -25,3 +25,6 @@ This tool helps to create a PiggyBank with your Kraken Account
     - _make serve_ => Builds and runs PiggyBank
     - _make release_ => Creates releases of PiggyBank for different architectures
     - _make clean_ => Clean up
+
+## Donate
+Bitcoin: bc1qzuf0felpylurg69jwj20qkwgg7uy7d5kegvmkv
