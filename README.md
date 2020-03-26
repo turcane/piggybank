@@ -16,7 +16,7 @@ This tool helps to create a PiggyBank with your Kraken Account. It checks every 
     - Orders & Trades - Cancel/Close Orders
 2. Add API Key from Kraken to **config.json**
 3. Add Private Key from Kraken to **config.json**
-4. Create a Withdrawn Address on Kraken
+4. Create a Withdraw Address on Kraken
 5. Add the description (not the address itself) of your withdrawal address to **config.json**
 6. Run piggybank
 
