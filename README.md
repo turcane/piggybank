@@ -1,10 +1,11 @@
 # Kraken PiggyBank
 This tool helps to create a PiggyBank with your Kraken Account. It checks every hour for new fiat funds (currently EUR only) and uses all funds to buy bitcoin. If there are bitcoin funds it will automatically withdraw to a defined bitcoin address.
 ## Roadmap
-- [ ] Add Support for more Fiat Currencies
-- [ ] Add Support for more Crypto Currencies
-- [ ] Add option to configure Sleep Time
-- [ ] Add option to deactivate withdrawal
+- [ ] Support for more Fiat Currencies
+- [ ] Support for more Crypto Currencies
+- [ ] Option to configure Sleep Time
+- [ ] Option to deactivate withdrawal
+- [ ] Notification when order was created or withdraw was done
 ## How to use
 1. Create an API Key on Kraken with following permissions:
     - Funds - Query Funds
