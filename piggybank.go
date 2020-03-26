@@ -52,7 +52,7 @@ func main() {
 				print("Not enough balance found.")
 			}
 		}
-		print("Going to sleept for 1 Hour.")
+		print("Going to sleep for 1 Hour.")
 		time.Sleep(1 * time.Hour)
 	}
 }
