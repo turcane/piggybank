@@ -1,5 +1,11 @@
-{
-    "APIKey": "",
-    "PrivateKey": "",
-    "WithdrawAddressDesc": ""
-}
+[
+    {
+        "AccountDescription": "Account #1",
+        "APIKey": "",
+        "PrivateKey": "",
+        "WithdrawAddressDesc": "",
+        "MinEURWithdrawBalance": 50.0,
+        "MinBTCWithdrawBalance": 0.0055
+    }
+]
+

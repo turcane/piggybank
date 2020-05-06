@@ -11,7 +11,7 @@ import (
 	krakenapi "github.com/beldur/kraken-go-api-client"
 )
 
-var config configuration
+var configs []configuration
 
 type balance struct {
 	eur float64
@@ -19,37 +19,42 @@ type balance struct {
 }
 
 type configuration struct {
-	APIKey              string
-	PrivateKey          string
-	WithdrawAddressDesc string
+	AccountDescription    string
+	APIKey                string
+	PrivateKey            string
+	WithdrawAddressDesc   string
+	MinEURWithdrawBalance float64
+	MinBTCWithdrawBalance float64
 }
 
 func main() {
 	setupConfig()
-	api := krakenapi.New(config.APIKey, config.PrivateKey)
 	for {
-		print("Checking Balance ...")
-		balance, err := getBalance(api)
-		if err != nil {
-			print("Could not check Balance. Error: " + err.Error())
-		} else {
-			print(fmt.Sprintf("EUR Balance: %.2f", balance.eur))
-			print(fmt.Sprintf("BTC Balance: %.8f", balance.btc))
-
-			if balance.eur >= 50 || balance.btc >= 0.0055 {
-				if balance.eur >= 50 {
-					err = buyBitcoin(api, balance.eur)
-					if err != nil {
-						print("Could not buy Bitcoin. Error: " + err.Error())
-					}
-				} else if balance.btc >= 0.0055 {
-					err = withdrawBitcoin(api, balance.btc)
-					if err != nil {
-						print("Could not withdraw Bitcoin. Error: " + err.Error())
-					}
-				}
+		for index, config := range configs {
+			api := krakenapi.New(config.APIKey, config.PrivateKey)
+			print(fmt.Sprintf("Checking Balance of Account \"%s\" [%d/%d]", config.AccountDescription, index, len(configs)))
+			balance, err := getBalance(api)
+			if err != nil {
+				print("Could not check Balance. Error: " + err.Error())
 			} else {
-				print("Not enough balance found.")
+				print(fmt.Sprintf("EUR Balance: %.2f", balance.eur))
+				print(fmt.Sprintf("BTC Balance: %.8f", balance.btc))
+
+				if balance.eur >= config.MinEURWithdrawBalance || balance.btc >= config.MinBTCWithdrawBalance {
+					if balance.eur >= config.MinEURWithdrawBalance {
+						err = buyBitcoin(api, balance.eur)
+						if err != nil {
+							print("Could not buy Bitcoin. Error: " + err.Error())
+						}
+					} else if balance.btc >= config.MinBTCWithdrawBalance {
+						err = withdrawBitcoin(api, balance.btc, config)
+						if err != nil {
+							print("Could not withdraw Bitcoin. Error: " + err.Error())
+						}
+					}
+				} else {
+					print("Not enough balance found.")
+				}
 			}
 		}
 		print("Going to sleep for 1 Hour.")
@@ -58,7 +63,7 @@ func main() {
 }
 
 func setupConfig() {
-	print("Welcome to Kraken PiggyBank v1.0")
+	print("Welcome to Kraken PiggyBank v1.1")
 
 	configFile, err := os.Open("./config.json")
 	if err != nil {
@@ -67,7 +72,7 @@ func setupConfig() {
 	}
 
 	decoder := json.NewDecoder(configFile)
-	err = decoder.Decode(&config)
+	err = decoder.Decode(&configs)
 
 	if err != nil {
 		print("Could not parse config.json. Error: " + err.Error())
@@ -107,7 +112,7 @@ func buyBitcoin(api *krakenapi.KrakenApi, balance float64) error {
 	return err
 }
 
-func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64) error {
+func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64, config configuration) error {
 	print(fmt.Sprintf("Withdrawing %.5f Bitcoin to %s", balance, config.WithdrawAddressDesc))
 	api.Withdraw("XBT", config.WithdrawAddressDesc, new(big.Float).SetFloat64(balance))
 	return nil
