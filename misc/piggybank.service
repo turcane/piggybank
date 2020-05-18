@@ -3,7 +3,7 @@ Description=Kraken Piggy Bank
 After=network.target
 
 [Service]
-
+WorkingDirectory=<installation path>
 ExecStart=<path to binary>
 User=<user>
 Group=<group>
