@@ -32,7 +32,7 @@ func main() {
 	for {
 		for index, config := range configs {
 			api := krakenapi.New(config.APIKey, config.PrivateKey)
-			print(fmt.Sprintf("Checking Balance of Account \"%s\" [%d/%d]", config.AccountDescription, index, len(configs)))
+			print(fmt.Sprintf("Checking Balance of Account \"%s\" [%d/%d]", config.AccountDescription, index+1, len(configs)))
 			balance, err := getBalance(api)
 			if err != nil {
 				print("Could not check Balance. Error: " + err.Error())
