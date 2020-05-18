@@ -1,3 +1,4 @@
+.DS_Store
 dist/piggybank
 dist/piggybank.exe
 release/*
