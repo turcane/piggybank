@@ -1,0 +1,168 @@
+
+[May 20 09:43:33] Welcome to Kraken PiggyBank v1.1
+[May 20 09:43:33] Going to sleep for 1 Hour(s).
+[May 20 09:44:25] Welcome to Kraken PiggyBank v1.1
+[May 20 09:44:25] Going to sleep for 1 Hour(s).
+[May 20 09:45:39] Welcome to Kraken PiggyBank v1.1
+[May 20 09:45:39] Going to sleep for 1 Hour(s).
+[May 20 09:46:23] Welcome to Kraken PiggyBank v1.1
+[May 20 09:46:23] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 09:46:24] EUR Balance: 0.01
+[May 20 09:46:24] BTC Balance: 0.00000314
+[May 20 09:46:24] Not enough balance found.
+[May 20 09:46:24] Going to sleep for 1 Hour(s).
+[May 20 10:00:23] Welcome to Kraken PiggyBank v1.1
+[May 20 10:01:40] Welcome to Kraken PiggyBank v1.1
+[May 20 10:01:40] A
+[May 20 10:02:40] Could not connect to SMPT Server: EOF
+[May 20 10:02:40] B
+[May 20 10:13:39] Welcome to Kraken PiggyBank v1.1
+[May 20 10:13:39] A
+[May 20 10:13:39] smtp.strato.de:465
+[May 20 10:14:55] Welcome to Kraken PiggyBank v1.1
+[May 20 10:14:55] A
+[May 20 10:14:55] B
+[May 20 10:14:55] C
+[May 20 10:14:55] Could not send Email: 500 5.5.1 Command unrecognized
+[May 20 10:15:11] Welcome to Kraken PiggyBank v1.1
+[May 20 10:15:11] A
+[May 20 10:16:11] Could not connect to SMPT Server: EOF
+[May 20 10:16:11] B
+[May 20 10:27:42] Welcome to Kraken PiggyBank v1.1
+[May 20 10:27:42] Could not connect to SMTP Server: 501 5.5.4 MAIL command parameter unrecognized: "<piggybank@turcan.de>>"
+[May 20 10:27:42] Could not connect to SMTP Server: 503 5.5.1 need MAIL FROM first
+[May 20 10:27:42] Could not connect to SMTP Server: 503 5.5.1 need MAIL FROM first
+[May 20 10:29:25] Welcome to Kraken PiggyBank v1.1
+[May 20 10:29:25] Could not set Sender on Notification Email: 501 5.5.4 MAIL command parameter unrecognized: "<piggybank@turcan.de>>"
+[May 20 10:29:25] Could not set Receiver on Notification Email: 503 5.5.1 need MAIL FROM first
+[May 20 10:29:25] Could not send Notification Email: 503 5.5.1 need MAIL FROM first
+[May 20 10:29:54] Welcome to Kraken PiggyBank v1.1
+[May 20 10:29:54] Could not send Notification Email: 554 5.6.0 The data part did not start with a valid header line
+[May 20 10:29:54] Could not send Notification Email: 421 out of sync, closing connection (MTU problem?)
+[May 20 10:29:54] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 10:29:54] EUR Balance: 0.01
+[May 20 10:29:54] BTC Balance: 0.00000314
+[May 20 10:29:54] Not enough balance found.
+[May 20 10:29:54] Going to sleep for 1 Hour(s).
+[May 20 10:32:03] Welcome to Kraken PiggyBank v1.1
+[May 20 10:32:03] Could not send Notification Email: 554 5.6.0 The data part did not start with a valid header line
+[May 20 10:32:03] Could not send Notification Email: 421 out of sync, closing connection (MTU problem?)
+[May 20 10:32:03] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 10:32:03] EUR Balance: 0.01
+[May 20 10:32:03] BTC Balance: 0.00000314
+[May 20 10:32:03] Not enough balance found.
+[May 20 10:32:03] Going to sleep for 1 Hour(s).
+[May 20 10:32:27] Welcome to Kraken PiggyBank v1.1
+[May 20 10:32:27] Could not send Notification Email: 554 5.6.0 The data part did not start with a valid header line
+[May 20 10:32:28] Could not send Notification Email: 421 out of sync, closing connection (MTU problem?)
+[May 20 10:32:28] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 10:32:28] EUR Balance: 0.01
+[May 20 10:32:28] BTC Balance: 0.00000314
+[May 20 10:32:28] Not enough balance found.
+[May 20 10:32:28] Going to sleep for 1 Hour(s).
+[May 20 10:35:32] Welcome to Kraken PiggyBank v1.1
+[May 20 10:35:32] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 10:35:33] EUR Balance: 0.01
+[May 20 10:35:33] BTC Balance: 0.00000314
+[May 20 10:35:33] Not enough balance found.
+[May 20 10:35:33] Going to sleep for 1 Hour(s).
+[May 20 10:53:20] Welcome to Kraken PiggyBank v1.1
+[May 20 10:53:20] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 10:53:20] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 10:53:21] EUR Balance: 0.01
+[May 20 10:53:21] BTC Balance: 0.00000314
+[May 20 10:53:21] Not enough balance found.
+[May 20 10:53:21] Going to sleep for 1 Hour(s).
+[May 20 11:01:23] Welcome to Kraken PiggyBank v1.1
+[May 20 11:01:24] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:01:24] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:01:24] EUR Balance: 0.01
+[May 20 11:01:24] BTC Balance: 0.00000314
+[May 20 11:01:24] Not enough balance found.
+[May 20 11:01:24] Going to sleep for 1 Hour(s).
+[May 20 11:03:03] Welcome to Kraken PiggyBank v1.1
+[May 20 11:03:04] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:03:04] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:03:04] EUR Balance: 0.01
+[May 20 11:03:04] BTC Balance: 0.00000314
+[May 20 11:03:04] Not enough balance found.
+[May 20 11:03:04] Going to sleep for 1 Hour(s).
+[May 20 11:03:41] Welcome to Kraken PiggyBank v1.1
+[May 20 11:03:42] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:03:42] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:03:43] EUR Balance: 0.01
+[May 20 11:03:43] BTC Balance: 0.00000314
+[May 20 11:03:43] Not enough balance found.
+[May 20 11:03:43] Going to sleep for 1 Hour(s).
+[May 20 11:05:07] Welcome to Kraken PiggyBank v1.1
+[May 20 11:05:07] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:05:07] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:05:08] EUR Balance: 0.01
+[May 20 11:05:08] BTC Balance: 0.00000314
+[May 20 11:05:08] Not enough balance found.
+[May 20 11:05:08] Going to sleep for 1 Hour(s).
+[May 20 11:17:47] Welcome to Kraken PiggyBank v1.1
+[May 20 11:17:48] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:17:48] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:17:48] EUR Balance: 0.01
+[May 20 11:17:48] BTC Balance: 0.00000314
+[May 20 11:17:48] Not enough balance found.
+[May 20 11:17:48] Going to sleep for 1 Hour(s).
+[May 20 11:19:28] Welcome to Kraken PiggyBank v1.1
+[May 20 11:19:28] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:19:28] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:19:29] EUR Balance: 0.01
+[May 20 11:19:29] BTC Balance: 0.00000314
+[May 20 11:19:29] Not enough balance found.
+[May 20 11:19:29] Going to sleep for 1 Hour(s).
+[May 20 11:20:34] Welcome to Kraken PiggyBank v1.1
+[May 20 11:20:35] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:20:35] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:20:35] EUR Balance: 0.01
+[May 20 11:20:35] BTC Balance: 0.00000314
+[May 20 11:20:35] Not enough balance found.
+[May 20 11:20:35] Going to sleep for 1 Hour(s).
+[May 20 11:51:51] Welcome to Kraken PiggyBank v1.1
+[May 20 11:51:51] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 11:51:51] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 11:51:52] EUR Balance: 0.01
+[May 20 11:51:52] BTC Balance: 0.00000314
+[May 20 11:51:52] Not enough balance found.
+[May 20 11:51:52] Going to sleep for 1 Hour(s).
+[May 20 12:06:39] Welcome to Kraken PiggyBank v1.1
+[May 20 12:06:40] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 12:06:40] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 12:06:40] EUR Balance: 0.01
+[May 20 12:06:40] BTC Balance: 0.00000314
+[May 20 12:06:40] Not enough balance found.
+[May 20 12:06:40] Going to sleep for 1 Hour(s).
+[May 20 12:07:50] Welcome to Kraken PiggyBank v1.1
+[May 20 12:07:50] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 12:07:50] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 12:07:50] EUR Balance: 0.01
+[May 20 12:07:50] BTC Balance: 0.00000314
+[May 20 12:07:50] Not enough balance found.
+[May 20 12:07:50] Going to sleep for 1 Hour(s).
+[May 20 12:18:29] Welcome to Kraken PiggyBank v1.1
+[May 20 12:18:29] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 12:18:29] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 12:18:30] EUR Balance: 0.01
+[May 20 12:18:30] BTC Balance: 0.00000314
+[May 20 12:18:30] Not enough balance found.
+[May 20 12:18:30] Going to sleep for 1 Hour(s).
+[May 20 12:19:45] Welcome to Kraken PiggyBank v1.1
+[May 20 12:19:45] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 12:19:45] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 12:20:40] Welcome to Kraken PiggyBank v1.1
+[May 20 12:20:40] Notification Email send to ediz.turcan@gmail.com for Account "Emine & Ediz".
+[May 20 12:20:40] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 12:20:40] EUR Balance: 0.01
+[May 20 12:20:40] BTC Balance: 0.00000314
+[May 20 12:20:40] Not enough balance found.
+[May 20 12:20:40] Going to sleep for 1 Hour(s).
+[May 20 12:25:26] Welcome to Kraken PiggyBank v1.1
+[May 20 12:25:26] Checking Balance of Account "Emine & Ediz" [1/1]
+[May 20 12:25:27] EUR Balance: 0.01
+[May 20 12:25:27] BTC Balance: 0.00000314
+[May 20 12:25:27] Not enough balance found.
+[May 20 12:25:27] Going to sleep for 1 Hour(s).

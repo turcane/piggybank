@@ -1,0 +1,6 @@
+{
+    "SubjectDeposit": "Well done! You have created an order!",
+    "MessageDeposit": "Well done! You have created an order on your account %account%.\nHere is an overview of your order:\n\nEuro Deposit:\t\t\t\t%eurodeposit%\nBitcoin Price:\t\t\t\t%bitcoinprice%\nAprox. Bitcoin to receive:\t%aproxbitcoinrcv%\nOrder Timeout:\t\t\t%ordertimeout% Minutes\n\n\nVires in Numeris!",
+    "SubjectWithdraw": "Well done! You have stacked some sats!",
+    "MessageWithdraw": "Well done! You have stacked %sats% sats on your account %account%.\nHere is an overview of your order:\n\nBitcoin to receive:\t\t%bitcoin% BTC\nAddress Description:\t%addressdesc%\n\n\n\nVires in Numeris!"
+}

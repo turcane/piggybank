@@ -3,9 +3,11 @@ This tool helps to create a PiggyBank with your Kraken Account. It checks every 
 ## Roadmap
 - [ ] Support for more Fiat Currencies
 - [ ] Support for more Crypto Currencies
-- [ ] Option to configure Sleep Time
+- [x] Support multiple accounts
+- [x] Option to configure Sleep Time
 - [ ] Option to deactivate withdrawal
-- [ ] Notification when order was created or withdraw was done
+- [x] Notification when order was created or withdrawal was done
+- [ ] Improve Email templating
 ## How to use
 1. Create an API Key on Kraken with following permissions:
     - Funds - Query Funds
