@@ -277,7 +277,7 @@ func buyBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfig
 		return err
 	}
 	print(fmt.Sprint("Price is at ", price, " € per Bitcoin."))
-	buyValue := balance / price
+	buyValue := float64(int(balance)) / float64(int(price))
 	print(fmt.Sprintf("Going to buy %.5f Bitcoin", buyValue))
 	args := make(map[string]string)
 	args["expiretm"] = fmt.Sprintf("+%d", (config.SleepTimeHours*60 - 5)) // Sleep Time in Minutes - 5
