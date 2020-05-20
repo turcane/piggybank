@@ -2,3 +2,4 @@
 dist/piggybank
 dist/piggybank.exe
 release/*
+dist/piggybank.log
