@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := build
-version := 1.2
+version := 1.3
 
 clean:
 	$(RM) dist/piggybank dist/piggybank.exe

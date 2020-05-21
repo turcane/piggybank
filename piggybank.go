@@ -112,7 +112,7 @@ func main() {
 }
 
 func setupConfig() {
-	print("Welcome to Kraken PiggyBank v1.2")
+	print("Welcome to Kraken PiggyBank v1.3")
 
 	configFile, err := os.Open("./config.json")
 	if err != nil {
