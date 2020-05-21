@@ -70,7 +70,8 @@ type depositInfo struct {
 }
 
 type withdrawInfo struct {
-	bitcoin     float64
+	balance     float64
+	fee         float64
 	addressdesc string
 }
 
@@ -81,6 +82,13 @@ func main() {
 			api := krakenapi.New(userconfig.APIKey, userconfig.PrivateKey)
 			print(fmt.Sprintf("Checking Balance of Account \"%s\" [%d/%d]", userconfig.AccountDescription, index+1, len(config.UserConfigs)))
 			balance, err := getBalance(api)
+
+			var withdrawinfo withdrawInfo
+			withdrawinfo.addressdesc = userconfig.WithdrawAddressDesc
+			withdrawinfo.balance = balance.btc
+			withdrawinfo.fee = 0.0005
+			sendWithdrawNotificationEmail(userconfig, withdrawinfo)
+
 			if err != nil {
 				print("Could not check Balance. Error: " + err.Error())
 			} else {
@@ -153,7 +161,8 @@ func sendWithdrawNotificationEmail(userconfig userconfiguration, withdrawinfo wi
 func sendDepositNotificationEmail(userconfig userconfiguration, depositinfo depositInfo) {
 	var withdrawinfo withdrawInfo
 	withdrawinfo.addressdesc = ""
-	withdrawinfo.bitcoin = 0
+	withdrawinfo.balance = 0
+	withdrawinfo.fee = 0
 	sendNotificationEmail(userconfig, orderCreated, depositinfo, withdrawinfo)
 }
 
@@ -197,9 +206,11 @@ func sendNotificationEmail(userconfig userconfiguration, emailtype emailType, de
 	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%bitcoinprice%", fmt.Sprintf("%f", depositinfo.bitcoinprice))
 	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%aproxbitcoinrcv%", fmt.Sprintf("%.8f", depositinfo.aproxbitcoinrcv))
 	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%ordertimeout%", fmt.Sprintf("%d", depositinfo.ordertimeout))
-	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%sats%", fmt.Sprintf("%d", int64(withdrawinfo.bitcoin*100000000)))
-	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%bitcoin%", fmt.Sprintf("%.8f", withdrawinfo.bitcoin))
+	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%sats%", fmt.Sprintf("%d", int64((withdrawinfo.balance-withdrawinfo.fee)*100000000)))
+	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%bitcoin%", fmt.Sprintf("%.8f", withdrawinfo.balance-withdrawinfo.fee))
 	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%addressdesc%", withdrawinfo.addressdesc)
+	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%balance%", fmt.Sprintf("%.8f", withdrawinfo.balance))
+	emailcontent.message = strings.ReplaceAll(emailcontent.message, "%fee%", fmt.Sprintf("%.8f", withdrawinfo.fee))
 
 	// Craft Email Content
 	message := ""
@@ -305,11 +316,16 @@ func buyBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfig
 
 func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfiguration) error {
 	print(fmt.Sprintf("Withdrawing %.5f Bitcoin to %s.", balance, userconfig.WithdrawAddressDesc))
-	api.Withdraw("XBT", userconfig.WithdrawAddressDesc, new(big.Float).SetFloat64(balance))
+	krakenWithdrawInfo, err := api.WithdrawInfo("XBT", userconfig.AccountDescription, new(big.Float).SetFloat64(balance))
+	if err != nil {
+		print("Could not receive Withdrawal Information: " + err.Error())
+	}
+	api.Withdraw("XBT", userconfig.WithdrawAddressDesc, &krakenWithdrawInfo.Limit)
 
 	var withdrawinfo withdrawInfo
 	withdrawinfo.addressdesc = userconfig.WithdrawAddressDesc
-	withdrawinfo.bitcoin = balance
+	withdrawinfo.balance = balance
+	withdrawinfo.fee, _ = krakenWithdrawInfo.Fee.Float64()
 	sendWithdrawNotificationEmail(userconfig, withdrawinfo)
 
 	return nil
