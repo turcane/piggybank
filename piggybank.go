@@ -83,12 +83,6 @@ func main() {
 			print(fmt.Sprintf("Checking Balance of Account \"%s\" [%d/%d]", userconfig.AccountDescription, index+1, len(config.UserConfigs)))
 			balance, err := getBalance(api)
 
-			var withdrawinfo withdrawInfo
-			withdrawinfo.addressdesc = userconfig.WithdrawAddressDesc
-			withdrawinfo.balance = balance.btc
-			withdrawinfo.fee = 0.0005
-			sendWithdrawNotificationEmail(userconfig, withdrawinfo)
-
 			if err != nil {
 				print("Could not check Balance. Error: " + err.Error())
 			} else {
@@ -315,12 +309,16 @@ func buyBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfig
 }
 
 func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfiguration) error {
-	print(fmt.Sprintf("Withdrawing %.5f Bitcoin to %s.", balance, userconfig.WithdrawAddressDesc))
 	krakenWithdrawInfo, err := api.WithdrawInfo("XBT", userconfig.AccountDescription, new(big.Float).SetFloat64(balance))
 	if err != nil {
 		print("Could not receive Withdrawal Information: " + err.Error())
 	}
 	api.Withdraw("XBT", userconfig.WithdrawAddressDesc, &krakenWithdrawInfo.Limit)
+
+	var limit, _ = krakenWithdrawInfo.Limit.Float64()
+	var fee, _ = krakenWithdrawInfo.Fee.Float64()
+
+	print(fmt.Sprintf("Withdrawing %.5f (- %.5f BTC Fee) Bitcoin to %s.", limit, fee, userconfig.WithdrawAddressDesc))
 
 	var withdrawinfo withdrawInfo
 	withdrawinfo.addressdesc = userconfig.WithdrawAddressDesc
