@@ -309,7 +309,7 @@ func buyBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfig
 }
 
 func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfiguration) error {
-	krakenWithdrawInfo, err := api.WithdrawInfo("XBT", userconfig.AccountDescription, new(big.Float).SetFloat64(balance))
+	krakenWithdrawInfo, err := api.WithdrawInfo("XBT", userconfig.WithdrawAddressDesc, new(big.Float).SetFloat64(balance))
 	if err != nil {
 		print("Could not receive Withdrawal Information: " + err.Error())
 	}
