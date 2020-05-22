@@ -2,7 +2,7 @@
 version := 1.4
 
 clean:
-	$(RM) dist/piggybank dist/piggybank.exe
+	$(RM) dist/piggybank dist/piggybank.exe dist/piggybank.log
 	rm -rf release
 
 build: clean
