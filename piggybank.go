@@ -318,7 +318,7 @@ func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userc
 	var limit, _ = krakenWithdrawInfo.Limit.Float64()
 	var fee, _ = krakenWithdrawInfo.Fee.Float64()
 
-	print(fmt.Sprintf("Withdrawing %.5f (- %.5f BTC Fee) Bitcoin to %s.", limit, fee, userconfig.WithdrawAddressDesc))
+	print(fmt.Sprintf("Withdrawing %.5f (-%.5f BTC Fee) Bitcoin to %s.", limit, fee, userconfig.WithdrawAddressDesc))
 
 	var withdrawinfo withdrawInfo
 	withdrawinfo.addressdesc = userconfig.WithdrawAddressDesc
