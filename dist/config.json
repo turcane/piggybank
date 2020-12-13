@@ -6,9 +6,21 @@
     "SMTPPassword": "",
     "SMTPSenderName": "PiggyBank",
     "SMTPSenderEmail": "piggybank@yourdomain.tld",
+    "Database": "./piggybank.sqlite",
     "UserConfigs": [
         {
+            "AccountID": 1,
             "AccountDescription": "Account #1",
+            "APIKey": "",
+            "PrivateKey": "",
+            "WithdrawAddressDesc": "",
+            "MinEURWithdrawBalance": 50.0,
+            "MinBTCWithdrawBalance": 0.0055,
+            "SendNotificationEmail": true,
+            "NotficationEmailAddress": "private@email.tld"
+        }, {
+            "AccountID": 2,
+            "AccountDescription": "Account #2",
             "APIKey": "",
             "PrivateKey": "",
             "WithdrawAddressDesc": "",

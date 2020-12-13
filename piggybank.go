@@ -1,9 +1,12 @@
 package main
 
 import (
+	"ELRA/tools"
 	"crypto/tls"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/big"
 	"net/smtp"
 	"os"
@@ -12,6 +15,7 @@ import (
 	"time"
 
 	krakenapi "github.com/beldur/kraken-go-api-client"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var config configuration
@@ -48,18 +52,20 @@ type configuration struct {
 	SMTPPassword    string
 	SMTPSenderName  string
 	SMTPSenderEmail string
+	Database        string
 	UserConfigs     []userconfiguration
 }
 
 type userconfiguration struct {
-	AccountDescription      string
-	APIKey                  string
-	PrivateKey              string
-	WithdrawAddressDesc     string
-	MinEURWithdrawBalance   float64
-	MinBTCWithdrawBalance   float64
-	SendNotificationEmail   bool
-	NotficationEmailAddress string
+	AccountID                int
+	AccountDescription       string
+	APIKey                   string
+	PrivateKey               string
+	WithdrawAddressDesc      string
+	MinEURWithdrawBalance    float64
+	MinBTCWithdrawBalance    float64
+	SendNotificationEmail    bool
+	NotificationEmailAddress string
 }
 
 type depositInfo struct {
@@ -75,8 +81,14 @@ type withdrawInfo struct {
 	addressdesc string
 }
 
+const databaseType = "sqlite3"
+const databaseLastBuyTimestamp = "last_buy_timestamp"
+const databaseLastBuyInvest = "last_buy_invest"
+const databaseLastBuyPrice = "last_buy_price"
+
 func main() {
 	setupConfig()
+	setupDatabase()
 	for {
 		for index, userconfig := range config.UserConfigs {
 			api := krakenapi.New(userconfig.APIKey, userconfig.PrivateKey)
@@ -92,6 +104,7 @@ func main() {
 				if balance.eur >= userconfig.MinEURWithdrawBalance || balance.btc >= userconfig.MinBTCWithdrawBalance {
 					if balance.eur >= userconfig.MinEURWithdrawBalance {
 						err = buyBitcoin(api, balance.eur, userconfig)
+
 						if err != nil {
 							print("Could not buy Bitcoin. Error: " + err.Error())
 						}
@@ -112,7 +125,7 @@ func main() {
 }
 
 func setupConfig() {
-	print("Welcome to Kraken PiggyBank v1.4")
+	print("Welcome to Kraken PiggyBank v1.5")
 
 	configFile, err := os.Open("./config.json")
 	if err != nil {
@@ -126,6 +139,27 @@ func setupConfig() {
 		print("Could not parse config.json. Error: " + err.Error())
 		os.Exit(1)
 	}
+}
+
+func setupDatabase() {
+	if _, err := os.Stat(config.Database); os.IsNotExist(err) {
+		print("No database found. Creating...")
+		db, err := sql.Open(databaseType, config.Database)
+		checkError(err)
+		defer db.Close()
+
+		createInvests, err := db.Prepare("CREATE TABLE invest (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, account_id INTEGER NOT NULL, timestamp INTEGER NOT NULL, invest DOUBLE NOT NULL, bitcoin DOUBLE PRECISION NOT NULL, price DOUBLE NOT NULL);")
+		tools.CheckError(err)
+		createInvests.Exec()
+
+		createTemp, err := db.Prepare("CREATE TABLE temp (type VARCHAR(18) NOT NULL, account_id INTEGER NOT NULL, s_value VARCHAR(255), i_value INTEGER, d_value DOUBLE, PRIMARY KEY (type, account_id));")
+		tools.CheckError(err)
+		createTemp.Exec()
+
+	} else {
+		print("Loading database...")
+	}
+
 }
 
 func print(message string) {
@@ -191,7 +225,7 @@ func sendNotificationEmail(userconfig userconfiguration, emailtype emailType, de
 	// Email Headers
 	headers := make(map[string]string)
 	headers["From"] = fmt.Sprintf("%s <%s>", config.SMTPSenderName, config.SMTPSenderEmail)
-	headers["To"] = userconfig.NotficationEmailAddress
+	headers["To"] = userconfig.NotificationEmailAddress
 	headers["Subject"] = emailcontent.subject
 
 	// Replace placeholders
@@ -245,7 +279,7 @@ func sendNotificationEmail(userconfig userconfiguration, emailtype emailType, de
 		print(fmt.Sprintf("Could not set Sender on Notification Email: %s", err.Error()))
 		return
 	}
-	if err = smtpClient.Rcpt(userconfig.NotficationEmailAddress); err != nil {
+	if err = smtpClient.Rcpt(userconfig.NotificationEmailAddress); err != nil {
 		print(fmt.Sprintf("Could not set Receiver on Notification Email: %s", err.Error()))
 		return
 	}
@@ -271,16 +305,18 @@ func sendNotificationEmail(userconfig userconfiguration, emailtype emailType, de
 		print(fmt.Sprintf("Could not send Notification Email: %s", err.Error()))
 		return
 	}
-	print(fmt.Sprintf("Notification Email send to %s for Account \"%s\".", userconfig.NotficationEmailAddress, userconfig.AccountDescription))
+	print(fmt.Sprintf("Notification Email send to %s for Account \"%s\".", userconfig.NotificationEmailAddress, userconfig.AccountDescription))
 }
 
 func buyBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfiguration) error {
 	print("Found some EUR Balance.")
 	print("Checking Bitcoin Price.")
 	price, err := getBitcoinPrice(api)
+
 	if err != nil {
 		return err
 	}
+
 	print(fmt.Sprint("Price is at ", price, " € per Bitcoin."))
 	buyValue := float64(int(balance)) / float64(int(price))
 	print(fmt.Sprintf("Going to buy %.5f Bitcoin", buyValue))
@@ -292,11 +328,55 @@ func buyBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfig
 	print(fmt.Sprintf(fmt.Sprintf("Order Expiry: %d Minutes.", (config.SleepTimeHours*60 - 5))))
 
 	r, err := api.AddOrder("XXBTZEUR", "buy", "market", fmt.Sprintf("%.5f", buyValue), args)
+
 	if err != nil {
 		return err
 	}
 
 	print(fmt.Sprintf("Order was created successfully. TX IDs: %v", r.TransactionIds))
+
+	db, err := sql.Open(databaseType, config.Database)
+	checkError(err)
+	defer db.Close()
+
+	insertTempSettings, err := db.Prepare("INSERT INTO temp (type, account_id, s_value, i_value, d_value) VALUES (?, ?, ?, ?, ?)")
+	tools.CheckError(err)
+	updateTemp, err := db.Prepare("UPDATE temp SET s_value = ?, i_value = ?, d_value = ? WHERE type = ? AND account_id = ?")
+	checkError(err)
+
+	var count int
+
+	row := db.QueryRow("SELECT COUNT(*) FROM temp WHERE type = ? AND account_id = ?", databaseLastBuyTimestamp, userconfig.AccountID)
+	err = row.Scan(&count)
+	checkError(err)
+
+	if count == 0 {
+		insertTempSettings.Exec(databaseLastBuyTimestamp, userconfig.AccountID, nil, int32(time.Now().Unix()), nil)
+	} else {
+		updateTemp.Exec(nil, int32(time.Now().Unix()), nil, databaseLastBuyTimestamp, userconfig.AccountID)
+	}
+
+	row = db.QueryRow("SELECT COUNT(*) FROM temp WHERE type = ? AND account_id = ?", databaseLastBuyPrice, userconfig.AccountID)
+	err = row.Scan(&count)
+	checkError(err)
+
+	if count == 0 {
+		insertTempSettings.Exec(databaseLastBuyPrice, userconfig.AccountID, nil, nil, price)
+	} else {
+		updateTemp.Exec(nil, nil, price, databaseLastBuyPrice, userconfig.AccountID)
+	}
+
+	row = db.QueryRow("SELECT COUNT(*) FROM temp WHERE type = ? AND account_id = ?", databaseLastBuyInvest, userconfig.AccountID)
+	err = row.Scan(&count)
+	checkError(err)
+
+	if count == 0 {
+		insertTempSettings.Exec(databaseLastBuyInvest, userconfig.AccountID, nil, nil, balance)
+	} else {
+		updateTemp.Exec(nil, nil, balance, databaseLastBuyInvest, userconfig.AccountID)
+	}
+
+	updateTemp.Exec(nil, nil, balance, databaseLastBuyInvest)
 
 	var depositinfo depositInfo
 	depositinfo.aproxbitcoinrcv = buyValue
@@ -310,9 +390,11 @@ func buyBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfig
 
 func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userconfiguration) error {
 	krakenWithdrawInfo, err := api.WithdrawInfo("XBT", userconfig.WithdrawAddressDesc, new(big.Float).SetFloat64(balance))
+
 	if err != nil {
-		print("Could not receive Withdrawal Information: " + err.Error())
+		return err
 	}
+
 	api.Withdraw("XBT", userconfig.WithdrawAddressDesc, &krakenWithdrawInfo.Limit)
 
 	var limit, _ = krakenWithdrawInfo.Limit.Float64()
@@ -323,8 +405,29 @@ func withdrawBitcoin(api *krakenapi.KrakenApi, balance float64, userconfig userc
 	var withdrawinfo withdrawInfo
 	withdrawinfo.addressdesc = userconfig.WithdrawAddressDesc
 	withdrawinfo.balance = balance
-	withdrawinfo.fee, _ = krakenWithdrawInfo.Fee.Float64()
+	withdrawinfo.fee = fee
 	sendWithdrawNotificationEmail(userconfig, withdrawinfo)
+
+	var timestamp int
+	var invest float64
+	var price float64
+
+	db, err := sql.Open(databaseType, config.Database)
+	checkError(err)
+	defer db.Close()
+
+	row := db.QueryRow("SELECT i_value FROM temp WHERE type = ? AND account_id", databaseLastBuyTimestamp, userconfig.AccountID)
+	row.Scan(&timestamp)
+
+	row = db.QueryRow("SELECT d_value FROM temp WHERE type = ? AND account_id", databaseLastBuyInvest, userconfig.AccountID)
+	row.Scan(&invest)
+
+	row = db.QueryRow("SELECT d_value FROM temp WHERE type = ? AND account_id", databaseLastBuyPrice, userconfig.AccountID)
+	row.Scan(&price)
+
+	insertBuy, err := db.Prepare("INSERT INTO invest (account_id, timestamp, invest, bitcoin, price) VALUES (?, ?, ?, ?, ?)")
+	checkError(err)
+	insertBuy.Exec(userconfig.AccountID, timestamp, invest, (limit - fee), price)
 
 	return nil
 }
@@ -348,4 +451,10 @@ func getBitcoinPrice(api *krakenapi.KrakenApi) (float64, error) {
 		return 0, err
 	}
 	return price, err
+}
+
+func checkError(err error) {
+	if err != nil {
+		log.Fatal("Error: " + err.Error())
+	}
 }

@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := build
-version := 1.4
+version := 1.5
 
 clean:
-	$(RM) dist/piggybank dist/piggybank.exe dist/piggybank.log
+	$(RM) dist/piggybank dist/piggybank.exe dist/piggybank.log dist/piggybank.sqlite
 	rm -rf release
 
 build: clean
