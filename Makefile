@@ -26,12 +26,12 @@ release: clean
 	$(RM) dist/piggybank dist/piggybank.exe
 	
 	# Windows x64
-	GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go build -o dist/piggybank.exe piggybank.go
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -o dist/piggybank.exe piggybank.go
 	zip -rj release/PiggyBank_$(version)_Windows.zip dist/*
 	$(RM) dist/piggybank dist/piggybank.exe
 	
 	# Linux x64
-	GOOS=linux GOARCH=amd64 CC=x86_64-linux-musl-gcc go build -ldflags '-w -extldflags "-static"' -o dist/piggybank piggybank.go
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-linux-musl-gcc go build -ldflags '-w -extldflags "-static"' -o dist/piggybank piggybank.go
 	zip -rj release/PiggyBank_$(version)_Linux.zip dist/*
 	$(RM) dist/piggybank dist/piggybank.exe 
 	
