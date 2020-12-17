@@ -36,6 +36,6 @@ release: clean
 	$(RM) dist/piggybank dist/piggybank.exe 
 	
 	# ARMHF x86 (Raspberry Pi) 
-	GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 CC=arm-linux-musleabihf-gcc go build -o dist/piggybank piggybank.go
+	GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 CC=arm-linux-musleabihf-gcc go build -ldflags '-w -extldflags "-static"' -o dist/piggybank piggybank.go
 	zip -rj release/PiggyBank_$(version)_RaspberryPi.zip dist/*
 	$(RM) dist/piggybank dist/piggybank.exe
