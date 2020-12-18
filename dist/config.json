@@ -17,7 +17,7 @@
             "APIKey": "",
             "PrivateKey": "",
             "WithdrawAddressDesc": "",
-            "MinEURBuyBalance": 50.0,
+            "MinEURBuyBalance": 100.0,
             "MinBTCWithdrawBalance": 0.0055,
             "SendNotificationEmail": true,
             "NotficationEmailAddress": "private@email.tld"
@@ -27,7 +27,7 @@
             "APIKey": "",
             "PrivateKey": "",
             "WithdrawAddressDesc": "",
-            "MinEURBuyBalance": 50.0,
+            "MinEURBuyBalance": 100.0,
             "MinBTCWithdrawBalance": 0.0055,
             "SendNotificationEmail": true,
             "NotficationEmailAddress": "private@email.tld"
