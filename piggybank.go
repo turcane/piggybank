@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"net/http"
 	"net/smtp"
 	"os"
 	"strconv"
@@ -15,6 +16,7 @@ import (
 	"time"
 
 	krakenapi "github.com/beldur/kraken-go-api-client"
+	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -53,6 +55,9 @@ type configuration struct {
 	SMTPSenderName  string
 	SMTPSenderEmail string
 	Database        string
+	APIEnabled      bool
+	APIAllowedHost  string
+	APIPort         int
 	UserConfigs     []userconfiguration
 }
 
@@ -62,7 +67,7 @@ type userconfiguration struct {
 	APIKey                   string
 	PrivateKey               string
 	WithdrawAddressDesc      string
-	MinEURWithdrawBalance    float64
+	MinEURBuyBalance         float64
 	MinBTCWithdrawBalance    float64
 	SendNotificationEmail    bool
 	NotificationEmailAddress string
@@ -89,6 +94,8 @@ const databaseLastBuyPrice = "last_buy_price"
 func main() {
 	setupConfig()
 	setupDatabase()
+	startAPI()
+
 	for {
 		for index, userconfig := range config.UserConfigs {
 			api := krakenapi.New(userconfig.APIKey, userconfig.PrivateKey)
@@ -101,8 +108,8 @@ func main() {
 				print(fmt.Sprintf("EUR Balance: %.2f", balance.eur))
 				print(fmt.Sprintf("BTC Balance: %.8f", balance.btc))
 
-				if balance.eur >= userconfig.MinEURWithdrawBalance || balance.btc >= userconfig.MinBTCWithdrawBalance {
-					if balance.eur >= userconfig.MinEURWithdrawBalance {
+				if balance.eur >= userconfig.MinEURBuyBalance || balance.btc >= userconfig.MinBTCWithdrawBalance {
+					if balance.eur >= userconfig.MinEURBuyBalance {
 						err = buyBitcoin(api, balance.eur, userconfig)
 
 						if err != nil {
@@ -125,7 +132,7 @@ func main() {
 }
 
 func setupConfig() {
-	print("Welcome to Kraken PiggyBank v1.5.1")
+	print("Welcome to Kraken PiggyBank v1.6")
 
 	configFile, err := os.Open("./config.json")
 	if err != nil {
@@ -453,8 +460,85 @@ func getBitcoinPrice(api *krakenapi.KrakenApi) (float64, error) {
 	return price, err
 }
 
+func startAPI() {
+	print(fmt.Sprintf("Starting API. It can be accessed at http://localhost:%d/.", config.APIPort))
+
+	router := mux.NewRouter()
+
+	router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	})
+
+	router.HandleFunc("/accounts", accountHandler)
+	router.HandleFunc("/history/{id}", historyHandler)
+
+	server := &http.Server{
+		Addr:         fmt.Sprintf("%s:%d", config.APIAllowedHost, config.APIPort),
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+		Handler:      router,
+	}
+
+	go func() {
+		err := server.ListenAndServe()
+		checkError(err)
+	}()
+}
+
+func accountHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	userConfigs, err := json.Marshal(config.UserConfigs)
+	checkError(err)
+	w.Write(userConfigs)
+}
+
+func historyHandler(w http.ResponseWriter, r *http.Request) {
+	accountID := mux.Vars(r)["id"]
+	w.Header().Set("Content-Type", "application/json")
+
+	db, err := sql.Open(databaseType, config.Database)
+	checkError(err)
+	defer db.Close()
+
+	invests := make([]Invest, 0)
+
+	rows, err := db.Query("SELECT timestamp, invest, bitcoin, price FROM invest WHERE account_id = ?", accountID)
+
+	for rows.Next() {
+		var timestamp int
+		var invest float32
+		var bitcoin float64
+		var price float32
+
+		err = rows.Scan(&timestamp, &invest, &bitcoin, &price)
+		if err != nil {
+			break
+		}
+
+		invests = append(invests, Invest{Timestamp: timestamp, Invest: invest, Bitcoin: bitcoin, Price: price})
+	}
+
+	investsJSON, err := json.Marshal(invests)
+	checkError(err)
+	w.Write(investsJSON)
+
+}
+
 func checkError(err error) {
 	if err != nil {
 		log.Fatal("Error: " + err.Error())
 	}
+}
+
+// Invest Type for Database
+type Invest struct {
+	Timestamp int
+	Invest    float32
+	Bitcoin   float64
+	Price     float32
 }
