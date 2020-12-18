@@ -492,9 +492,17 @@ func startAPI() {
 
 func accountHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	userConfigs, err := json.Marshal(config.UserConfigs)
+
+	userConfigs := make([]UserConfig, 0)
+
+	for _, userConfig := range config.UserConfigs {
+		userConfigs = append(userConfigs, UserConfig{AccountID: userConfig.AccountID, AccountDescription: userConfig.AccountDescription, WithdrawAddressDesc: userConfig.WithdrawAddressDesc, MinEURBuyBalance: userConfig.MinEURBuyBalance, MinBTCWithdrawBalance: userConfig.MinBTCWithdrawBalance, SendNotificationEmail: userConfig.SendNotificationEmail, NotficationEmailAddress: userConfig.NotificationEmailAddress})
+	}
+
+	userConfigsJSON, err := json.Marshal(userConfigs)
+
 	checkError(err)
-	w.Write(userConfigs)
+	w.Write(userConfigsJSON)
 }
 
 func historyHandler(w http.ResponseWriter, r *http.Request) {
@@ -541,4 +549,15 @@ type Invest struct {
 	Invest    float32
 	Bitcoin   float64
 	Price     float32
+}
+
+// UserConfig Response Struct
+type UserConfig struct {
+	AccountID               int
+	AccountDescription      string
+	WithdrawAddressDesc     string
+	MinEURBuyBalance        float64
+	MinBTCWithdrawBalance   float64
+	SendNotificationEmail   bool
+	NotficationEmailAddress string
 }
