@@ -7,6 +7,9 @@
     "SMTPSenderName": "PiggyBank",
     "SMTPSenderEmail": "piggybank@yourdomain.tld",
     "Database": "./piggybank.sqlite",
+    "APIEnabled": true,
+    "APIAllowedHost": "127.0.0.1",
+    "APIPort": 9014,
     "UserConfigs": [
         {
             "AccountID": 1,
@@ -14,7 +17,7 @@
             "APIKey": "",
             "PrivateKey": "",
             "WithdrawAddressDesc": "",
-            "MinEURWithdrawBalance": 50.0,
+            "MinEURBuyBalance": 50.0,
             "MinBTCWithdrawBalance": 0.0055,
             "SendNotificationEmail": true,
             "NotficationEmailAddress": "private@email.tld"
@@ -24,7 +27,7 @@
             "APIKey": "",
             "PrivateKey": "",
             "WithdrawAddressDesc": "",
-            "MinEURWithdrawBalance": 50.0,
+            "MinEURBuyBalance": 50.0,
             "MinBTCWithdrawBalance": 0.0055,
             "SendNotificationEmail": true,
             "NotficationEmailAddress": "private@email.tld"
